@@ -1,10 +1,21 @@
+#include<raylib.h>
 #include<iostream>
+#include<random>
 #include<vector>
+#define width 800
+#define height 600
 using namespace std;
 int main(){
-system("cls");
-int a='x';
-int b='o';
-cout<<endl<<a<<b<<endl;
-return 0;
+InitWindow(width,height,"asdf");
+
+BeginDrawing();
+DrawFPS(3,3);
+DrawRectangle(5,5,50,50,WHITE);
+
+EndDrawing();
+
+while(!WindowShouldClose()){
+BeginDrawing();
+EndDrawing();
+}
 }
