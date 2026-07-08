@@ -1,101 +1,51 @@
-#define _XOPEN_SOURCE 500
+#include"raylib.h"
 #include<iostream>
-#include<ftw.h> // for nftw
-#include<vector>
-#include<string.h>
-#include<cstring> // because nftw uses cstrings
-#include<map>
 using namespace std;
-// Stores the length of the longest file path.
-// Used to scale the progress bar.
-int maxlength=0; 
+#define width 800
+#define height 600
+float a=width*0.2, b=0;
+float x=width*0.7, y=-1;
+Rectangle rect1= {width*0.2,height*0.7-30,30,30};
+Rectangle rect2={width*0.7+100,height*0.7-300,1200,300};
+unsigned long long counter=0;
+float   m1=1,m2=1000000;
 
-// Multimaps store files sorted by size.
-// Key   = size
-// Value = {unit, filepath}
-multimap<float  , pair<string, string>, greater<int>> bytes;
-multimap<float  , pair<string, string>, greater<int>> kb;
-multimap<float  , pair<string, string>, greater<int>> mb;
-multimap<float  , pair<string, string>, greater<int>> gb;
 
-// Callback function called by nftw() for every file/directory.
-int Data_fetch(const char *path, const struct stat *sb, int typeflag, struct FTW *ftwbuffer){
-    size_t filesize=sb->st_size;
-
-    // Track longest path for progress bar scaling.
-    if(maxlength<strlen(path)){
-        
-        maxlength=strlen(path);
-    }
-     // Categorize files by size
-    if(filesize<1023){
-        bytes.insert({filesize,{"BYTES", path}});
-    }
-    else if(filesize>=1024 && filesize<1048576){
-        kb.insert({filesize/1024.0, {"KB", path}});
-    }
-    else if(filesize>=1048576 && filesize<1073741824){
-mb.insert({filesize/(1024.0*1024.0), {"MB", path}});
-    }
-    else{
-        gb.insert({filesize/(1024.0*1024.0*1024.0), {"GB", path}});
-    }
-    return 0; // continue traversal as 0 indicate successful calling  
-}
-
-// Draws a text progress bar.
-void progress_bar(int progress){
-    int limit=4*1024;
-    int bar=limit/(maxlength+15);
-for(int i=0; i<limit; i+=bar){
-    if(progress>0){
-        progress-=bar;
-        cout<<"#";}
-    else
-        cout<<"_";
-}
-}
-
-// Print all Collected Files
-void display(){
+void update_position(){
     
-for(const auto& x: gb){ // Display GB files First (if any)
-     cout<<"[";
-    progress_bar(3*1024+x.first);
-    cout<<"]"<<endl;
-    cout<<x.first<<"\t"<<x.second.first<<"\t"<<x.second.second<<endl;
-}
-
-for(const auto& x: mb){ // Display mb files secondly (if any)
-    cout<<"[";
+    rect1.x+=b;
+    rect2.x+=y;
+    if(rect1.x<=60)  {b*=-1;
+   cout<<"Collision Occured: "<<++counter<<endl;}
     
-    progress_bar(500+x.first);
-    cout<<"]"<<endl;
-cout<<x.first<<"\t"<<x.second.first<<"\t"<<x.second.second<<endl;
-}
+     
+ if(CheckCollisionRecs(rect1,rect2)){
+    cout<<"Collision Occured: "<<++counter<<endl;
+    float temp1=(((m1-m2)/(m1+m2))*b)+((2*m2)/(m1+m2))*y;
+    float temp2=(((2*m1)/(m1+m2))*b)+((m2-m1)/(m1+m2))*y;
 
-for(const auto& x: kb){ // Display kilobytes files 
-    cout<<"[";
-    progress_bar(240);
-    cout<<"]"<<endl;
-cout<<x.first<<"\t"<<x.second.first<<"\t"<<x.second.second<<endl;
-}
-for(const auto& x: bytes){ // display bytes-sized files
-    cout<<"[";
-    progress_bar(1);
-    cout<<"]"<<endl;
-cout<<x.first<<"\t"<<x.second.first<<"\t"<<x.second.second<<endl;
-}
+    b=temp1;
+    y=temp2;
+ }
 }
 int main(){
-    // Clear Terminal(for windows environment only)
-     // "." = current directory
-    // Data_fetch = callback
-    // 10 = max open file descriptors
-system("cls");
-nftw(".", Data_fetch,10,0);
-cout<<"Current directory Files: \n\n";
-    display();
-    
-return 0;
+InitWindow(width,height,"Calculating Value of PI...");
+if(m2>10000)
+    SetTargetFPS(200);
+else
+    SetTargetFPS(60);
+
+while(!WindowShouldClose()){
+BeginDrawing();
+ClearBackground(BLACK);
+DrawFPS(4,4);
+update_position();
+DrawLine(60,height*0.7,60,0,WHITE);
+DrawLine(0,height*0.7,width,height*0.7,WHITE);
+
+DrawRectangleRec(rect1,WHITE);
+DrawRectangleRec(rect2,WHITE);
+EndDrawing();
+}
+CloseWindow();
 } 
