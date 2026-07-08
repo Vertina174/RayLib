@@ -11,14 +11,16 @@ int board[3][3] ={
     {0,0,0},
     {0,0,0}
 };
-int player=0,counter=0;
+int player=0,counter=0,winner=0;
 void drawboard(){
-    DrawLine(300, 100, 300, height*0.85, WHITE);
+DrawLine(300, 100, 300, height*0.85, WHITE);
 DrawLine(500, 100, 500, height*0.85, WHITE);
 
 DrawLine(180, 215, width*0.79, 215, WHITE);
 DrawLine(180, 385, width*0.79, 385, WHITE);
+
 DrawText("Player: ",5,5,50,WHITE);
+
 if(!player){
     DrawRectangle(190,5,50,70,BLACK);
     DrawText("o",190,-20,100,WHITE);
@@ -29,26 +31,26 @@ else{
 }
 }
 int checkwinner(){
-    for(int i=0; i<3; i++){ // checking for rows
+    for(int i=0; i<3; i++){// checking for rows
         if(board[i][0]!=0){
             if(board[i][0] == board[i][1] && board[i][1] == board[i][2]){
                 return board[i][0];
             }
         }
     }
-    for(int i=0; i<3; i++){
+    for(int i=0; i<3; i++){// Checking for Columns
         if(board[0][i]!=0){
             if(board[0][i] == board[1][i] && board[1][i] == board[2][i]){
                 return board[0][i];
             }
         }
     }
-    if(board[0][0]!=0){
+    if(board[0][0]!=0){// First Digonal
         if(board[0][0] == board[1][1] && board[1][1] == board[2][2]){
             return board[0][0];
         }
     }
-    if(board[0][2]!=0){
+    if(board[0][2]!=0){// Second Digonal
         if(board[0][2] == board[1][1] && board[1][1] == board[2][0]){
             return board[0][2];
         }
@@ -57,42 +59,33 @@ int checkwinner(){
 }
 
 void playermove(int position){
-    counter++;
+    ++counter;
     switch(position){
         case 1:{
             if(player==0){
-                BeginDrawing();
-                
                 DrawText("o",200,70,150,BLUE);
-                EndDrawing();
                 board[0][0]=1;
                 player=1;                
             }
             else{
-                BeginDrawing();
-                EndDrawing();
                 DrawText("x",200,70,150,RED);
-                EndDrawing();
                 board[0][0]=2;
-            player=0;}
+            player=0;
+                }
             break;
         }
         case 2:{
             if(player==0){
-                BeginDrawing();
                 DrawText("o",350,70,150,BLUE);
-                EndDrawing();
                 board[0][1]=1;
                 player=1;                
             }
             else{
-                BeginDrawing();
                 DrawText("x",350,70,150,RED);
-                EndDrawing();
                 board[0][1]=2;
-            player=0;}
-            
-            break;
+                player=0;
+                }
+                break;
         }
         case 3:{
              if(player==0){
@@ -103,7 +96,8 @@ void playermove(int position){
             else{
                 DrawText("x",521,70,150,RED);
                 board[0][2]=2;
-            player=0;}
+                player=0;
+                }
             break;
         }
         case 4:{
@@ -115,7 +109,8 @@ void playermove(int position){
             else{
                 DrawText("x",200,216,150,RED);
                 board[1][0]=2;
-            player=0;}
+                player=0;
+                }
             break;
         }
         case 5:{
@@ -127,7 +122,8 @@ void playermove(int position){
             else{
                 DrawText("x",350,216,150,RED);
                 board[1][1]=2;
-            player=0;}
+                player=0;
+                }
             break;
         }
         case 6:{
@@ -139,7 +135,8 @@ void playermove(int position){
             else{
                 DrawText("x",521,216,150,RED);
                 board[1][2]=2;
-            player=0;}
+                player=0;
+                }
             break;
         }
         case 7:{
@@ -151,7 +148,8 @@ void playermove(int position){
             else{
                 DrawText("x",200,370,150,RED);
                 board[2][0]=2;
-            player=0;}
+                player=0;
+                }
             break;
         }
         case 8:{
@@ -163,7 +161,8 @@ void playermove(int position){
             else{
                 DrawText("x",350,370,150,RED);
                 board[2][1]=2;
-            player=0;}
+                player=0;
+                }
             break;
         }
         case 9:{
@@ -175,29 +174,28 @@ void playermove(int position){
             else{
                 DrawText("x",521,360,150,RED);
                 board[2][2]=2;
-            player=0;}
-            break;
-        }
-        default:{
+                player=0;
+                }
             break;
         }
     }
-    int winner = checkwinner();
+
+    winner = checkwinner();
     if(winner == 1){
-        DrawText("Player 1 Wins!!!",110,5,80,YELLOW);
+        DrawText("Player 1 Wins!!!",110,height-90,80,YELLOW);
     }
     else if(winner ==2){
-        DrawText("Player 2 Wins!!!",110,5,80,YELLOW);
+        DrawText("Player 2 Wins!!!",110,height-90,80,YELLOW);
     }
     else if(counter==9){
-        DrawText("DRAW",300,5,80,YELLOW);
+        DrawText("DRAW",300,height-90,80,YELLOW);
     }
 }
 void getmouseposition(){
     int x=GetMouseX();
     int y= GetMouseY();
      if(x>180 && x<300 ){
-        if( y>100 && y<215){ // First Cell
+        if(y>100 && y<215){// First Cell
         cout<<"First Cell"<<endl;
         if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
             if(board[0][0]==0){
@@ -205,7 +203,7 @@ void getmouseposition(){
             
         }
     }
-        else if(y>216 && y<385){ // Fourth Cell
+        else if(y>216 && y<385){// Fourth Cell
             cout<<"Fourth Cell"<<endl;
          if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
             if(board[1][0]==0)
@@ -213,8 +211,8 @@ void getmouseposition(){
             
         }
         }
-        else if(y>386 && y<500){
-            cout<<"Seventh Cell"<<endl;// Seventh Cell
+        else if(y>386 && y<500){// Seventh Cell
+            cout<<"Seventh Cell"<<endl;
             if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
                 if(board[2][0]==0)
             playermove(7);
@@ -222,8 +220,8 @@ void getmouseposition(){
         }
         }
     }
-     else if(x>301 && x<500 ){
-        if( y>100 && y<215){ // second Cell
+     else if(x>301 && x<500 ){// second Cell
+        if( y>100 && y<215){
         cout<<"Second Cell"<<endl;
         if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
             if(board[0][1]==0)
@@ -284,6 +282,7 @@ int main(){
 InitWindow(width,height, "Hello World!");
 SetTargetFPS(60);
 system("cls");
+
 while (!WindowShouldClose()){
     BeginDrawing();
     
@@ -291,18 +290,19 @@ while (!WindowShouldClose()){
     
     int x=GetMouseX();
     int y=GetMouseY();
+    
     if(x>180 && x<621 && y>100 && y<501){
         system("cls");
         cout<<"Inside Board"<<endl;
-        getmouseposition();
+        if(!winner){
+            getmouseposition();}
         for(int i=0; i<3; i++){
         for(int j=0; j<3; j++){
             cout<<board[i][j];
         }
         cout<<endl;
     }
-    }
-    
+    }   
     EndDrawing();
 }
 }
